@@ -11,6 +11,7 @@
 
 import Foundation
 import CoreGraphics
+import UIKit
 
 
 open class CandleChartDataSet: LineScatterCandleRadarChartDataSet, CandleChartDataSetProtocol
@@ -80,8 +81,8 @@ open class CandleChartDataSet: LineScatterCandleRadarChartDataSet, CandleChartDa
     /// the corner radius of the candle bar,
     ///
     /// **default**: 0.0
-    open var corners: UIRectCorner = []
-    
+    open var corners = NSDictionary()
+
     /// should the candle bars show?
     /// when false, only "ticks" will show
     ///
