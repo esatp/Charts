@@ -13,6 +13,42 @@ import Foundation
 import CoreGraphics
 import UIKit
 
+public class EntryCorner: NSObject  {
+    var x: Double = 0.0
+    var corners: [Int] = [0,0,0,0]
+    
+    var topLeft: Bool {
+        if corners.count > 0, let c = corners.first, c == 1 {
+            return true
+        }
+        
+        return false
+    }
+    
+    var topRight: Bool {
+        if corners.count > 1 {
+            return corners[1] == 1
+        }
+        
+        return false
+    }
+    
+    var bottomLeft: Bool {
+        if corners.count > 2 {
+            return corners[2] == 1
+        }
+        
+        return false
+    }
+    
+    var bottomRight: Bool {
+        if corners.count > 3 {
+            return corners[3] == 1
+        }
+        
+        return false
+    }
+}
 
 open class CandleChartDataSet: LineScatterCandleRadarChartDataSet, CandleChartDataSetProtocol
 {
@@ -81,7 +117,7 @@ open class CandleChartDataSet: LineScatterCandleRadarChartDataSet, CandleChartDa
     /// the corner radius of the candle bar,
     ///
     /// **default**: 0.0
-    open var corners = NSDictionary()
+    public var corners: [EntryCorner] = []
 
     /// should the candle bars show?
     /// when false, only "ticks" will show

@@ -30,7 +30,7 @@ public protocol CandleChartDataSetProtocol: LineScatterCandleRadarChartDataSetPr
     
     /// the corner radius of the candle bar,
     /// **default**: 0.0
-    var corners: NSDictionary { get set }
+    var corners: [EntryCorner] { get set }
     
     /// should the candle bars show?
     /// when false, only "ticks" will show

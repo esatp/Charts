@@ -163,14 +163,21 @@ open class CandleStickChartRenderer: LineScatterCandleRadarRenderer
                 // define roundedRect for corner radius
                 //let corners = dataSet.corners[xPos] ?? []
                 
-           
-                
-                let radiusKey = NSNumber(value: e.x)
-                let cornersValue = dataSet.corners[radiusKey] as? NSValue
-                var corners: UIRectCorner = []
-                cornersValue?.getValue(&corners)
-                
-                let roundedRect = UIBezierPath(roundedRect: _bodyRect, byRoundingCorners: corners, cornerRadii: CGSize(width: dataSet.barCornerRadius, height: dataSet.barCornerRadius))
+                let entryCorner = dataSet.corners.first { e in
+                    return e.x == xPos
+                }
+
+                var roundedRect = UIBezierPath(roundedRect: _bodyRect, byRoundingCorners: [], cornerRadii: CGSize(width: dataSet.barCornerRadius, height: dataSet.barCornerRadius))
+
+                if let entryCorner = entryCorner {
+                    var cornersToRound: UIRectCorner = []
+                    if entryCorner.topLeft { cornersToRound.insert(.topLeft) }
+                    if entryCorner.topRight { cornersToRound.insert(.topRight) }
+                    if entryCorner.bottomRight { cornersToRound.insert(.bottomRight) }
+                    if entryCorner.bottomLeft { cornersToRound.insert(.bottomLeft) }
+
+                    roundedRect = UIBezierPath(roundedRect: _bodyRect, byRoundingCorners: cornersToRound, cornerRadii: CGSize(width: dataSet.barCornerRadius, height: dataSet.barCornerRadius))
+                }
 
 
                 // draw body differently for increasing and decreasing entry
