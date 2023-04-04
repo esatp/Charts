@@ -27,6 +27,10 @@ public protocol CandleChartDataSetProtocol: LineScatterCandleRadarChartDataSetPr
     /// **default**: 0.0
     var barCornerRadius: CGFloat { get set }
     
+    /// the corner radius of the candle bar,
+    /// **default**: 0.0
+    var corners: UIRectCorner { get set }
+
     /// should the candle bars show?
     /// when false, only "ticks" will show
     ///
