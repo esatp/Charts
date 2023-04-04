@@ -14,8 +14,8 @@ import CoreGraphics
 import UIKit
 
 public class EntryCorner: NSObject  {
-    var x: Double = 0.0
-    var corners: [Int] = [0,0,0,0]
+    public var x: Double = 0.0
+    public var corners: [Int] = [0,0,0,0]
     
     var topLeft: Bool {
         if corners.count > 0, let c = corners.first, c == 1 {
