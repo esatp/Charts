@@ -308,7 +308,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
         context.saveGState()
         defer { context.restoreGState() }
         
-        // draw the bar shadow before the values
+        // Draw the bar shadow before the values
         if dataProvider.isDrawBarShadowEnabled
         {
             guard let barData = dataProvider.barData else { return }
@@ -343,7 +343,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
 
         let buffer = _buffers[index]
         
-        // draw the bar shadow before the values
+        // Draw the bar shadow before the values
         if dataProvider.isDrawBarShadowEnabled
         {
             for barRect in buffer where viewPortHandler.isInBoundsLeft(barRect.origin.x + barRect.size.width)
@@ -362,7 +362,7 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
             context.setFillColor(dataSet.color(atIndex: 0).cgColor)
         }
         
-        // In case the chart is stacked, we need to accomodate individual bars within accessibilityOrdereredElements
+        // In case the chart is stacked, we need to accommodate individual bars within accessibilityOrderedElements
         let isStacked = dataSet.isStacked
         let stackSize = isStacked ? dataSet.stackSize : 1
 
@@ -373,19 +373,32 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
             guard viewPortHandler.isInBoundsLeft(barRect.origin.x + barRect.size.width) else { continue }
             guard viewPortHandler.isInBoundsRight(barRect.origin.x) else { break }
 
+            // Create rounded rectangle path if needed
+            var barPath: UIBezierPath
+            if dataSet.barCornerRadius > 0
+            {
+                barPath = UIBezierPath(roundedRect: barRect, cornerRadius: dataSet.barCornerRadius)
+            }
+            else
+            {
+                barPath = UIBezierPath(rect: barRect)
+            }
+            
             if !isSingleColor
             {
                 // Set the color for the currently drawn value. If the index is out of bounds, reuse colors.
                 context.setFillColor(dataSet.color(atIndex: j).cgColor)
             }
             
-            context.fill(barRect)
+            context.addPath(barPath.cgPath)
+            context.fillPath()
             
             if drawBorder
             {
                 context.setStrokeColor(borderColor.cgColor)
                 context.setLineWidth(borderWidth)
-                context.stroke(barRect)
+                context.addPath(barPath.cgPath)
+                context.strokePath()
             }
 
             // Create and append the corresponding accessibility element to accessibilityOrderedElements
