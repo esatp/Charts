@@ -17,7 +17,7 @@ open class BarChartDataSet: BarLineScatterCandleBubbleChartDataSet, BarChartData
 {
     open var barCornerRadius: CGFloat = 0.0
     open var barWidth: CGFloat = 0.9
-
+    public var corners: [Int] = [0, 0, 0, 0]
     
     private func initialize()
     {

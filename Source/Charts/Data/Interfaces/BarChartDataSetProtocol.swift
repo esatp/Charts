@@ -45,4 +45,6 @@ public protocol BarChartDataSetProtocol: BarLineScatterCandleBubbleChartDataSetP
     
     /// The width of the bars in the chart.
     var barWidth: CGFloat { get set }
+    
+    var corners: [Int]  {get set}
 }
