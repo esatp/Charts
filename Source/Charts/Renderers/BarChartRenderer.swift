@@ -690,64 +690,67 @@ open class BarChartRenderer: BarLineScatterCandleBubbleRenderer
         
     }
     
-    open override func drawHighlighted(context: CGContext, indices: [Highlight])
-    {
+    open override func drawHighlighted(context: CGContext, indices: [Highlight]) {
         guard
             let dataProvider = dataProvider,
             let barData = dataProvider.barData
-            else { return }
-        
+        else { return }
+
         context.saveGState()
         defer { context.restoreGState() }
         var barRect = CGRect()
-        
-        for high in indices
-        {
+
+        for high in indices {
             guard
                 let set = barData[high.dataSetIndex] as? BarChartDataSetProtocol,
                 set.isHighlightEnabled
-                else { continue }
-            
-            if let e = set.entryForXValue(high.x, closestToY: high.y) as? BarChartDataEntry
-            {
+            else { continue }
+
+            if let e = set.entryForXValue(high.x, closestToY: high.y) as? BarChartDataEntry {
                 guard isInBoundsX(entry: e, dataSet: set) else { continue }
-                
+
                 let trans = dataProvider.getTransformer(forAxis: set.axisDependency)
-                
+
                 context.setFillColor(set.highlightColor.cgColor)
                 context.setAlpha(set.highlightAlpha)
-                
+
                 let isStack = high.stackIndex >= 0 && e.isStacked
-                
+
                 let y1: Double
                 let y2: Double
-                
-                if isStack
-                {
-                    if dataProvider.isHighlightFullBarEnabled
-                    {
+
+                if isStack {
+                    if dataProvider.isHighlightFullBarEnabled {
                         y1 = e.positiveSum
                         y2 = -e.negativeSum
-                    }
-                    else
-                    {
+                    } else {
                         let range = e.ranges?[high.stackIndex]
-                        
                         y1 = range?.from ?? 0.0
                         y2 = range?.to ?? 0.0
                     }
-                }
-                else
-                {
+                } else {
                     y1 = e.y
                     y2 = 0.0
                 }
-                
+
                 prepareBarHighlight(x: e.x, y1: y1, y2: y2, barWidthHalf: barData.barWidth / 2.0, trans: trans, rect: &barRect)
-                
+
+                // Apply rounded corners to the highlight
+                let corners = set.corners
+                var cornersToRound: UIRectCorner = []
+                if corners[0] == 1 { cornersToRound.insert(.topLeft) }
+                if corners[1] == 1 { cornersToRound.insert(.topRight) }
+                if corners[2] == 1 { cornersToRound.insert(.bottomLeft) }
+                if corners[3] == 1 { cornersToRound.insert(.bottomRight) }
+
+                let roundedRect = UIBezierPath(roundedRect: barRect, byRoundingCorners: cornersToRound, cornerRadii: CGSize(width: set.barCornerRadius, height: set.barCornerRadius))
+
+                // Draw the rounded highlight
+                context.addPath(roundedRect.cgPath)
+                context.fillPath()
+
+                // Set the highlight draw position
                 setHighlightDrawPos(highlight: high, barRect: barRect)
-                
-                context.fill(barRect)
             }
         }
     }
